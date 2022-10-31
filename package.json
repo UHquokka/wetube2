@@ -1,0 +1,28 @@
+{
+  "name": "wetube2",
+  "version": "1.0.0",
+  "description": "The best way to watch videos.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UHquokka/wetube2.git"
+  },
+  "author": "quokka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UHquokka/wetube2/issues"
+  },
+  "homepage": "https://github.com/UHquokka/wetube2#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/node": "^7.20.0",
+    "@babel/preset-env": "^7.19.4"
+  }
+}
