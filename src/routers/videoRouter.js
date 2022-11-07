@@ -1,12 +1,9 @@
 // URL이 /video로 시작
 import express from "express";
-
+import { watchVideos, editVideos } from "../controllers/videoControllers";
 const videoRouter = express.Router();
 
-const handleWatch = (req, res) => res.send("Videos");
-const handleEdit = (req, res) => res.send("Edit Videos");
-
-videoRouter.get("/watch", handleWatch);
-videoRouter.get("/edit", handleEdit);
+videoRouter.get("/watch", watchVideos);
+videoRouter.get("/edit", editVideos);
 
 export default videoRouter;

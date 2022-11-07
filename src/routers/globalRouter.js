@@ -1,12 +1,11 @@
 // URL이 /로 시작
 import express from "express";
+import { treding } from "../controllers/videoControllers";
+import { join } from "../controllers/userControllers";
 
 const globalRouter = express.Router();
 
-const handleHome = (req, res) => res.send("Home");
-const handleJoin = (req, res) => res.send("Join");
-
-globalRouter.get("/", handleHome);
-globalRouter.get("/join", handleJoin);
+globalRouter.get("/", treding);
+globalRouter.get("/join", join);
 
 export default globalRouter;

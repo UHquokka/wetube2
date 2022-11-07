@@ -1,12 +1,9 @@
 // URL이 /users 로 시작
 import express from "express";
-
+import { editUser, remove } from "../controllers/userControllers";
 const userRouter = express.Router();
 
-const handleEdit = (req, res) => res.send("Edit User");
-const handleDelete = (req, res) => res.send("Delete User");
-
-userRouter.get("/edit", handleEdit);
-userRouter.get("/delete", handleDelete);
+userRouter.get("/edit", editUser);
+userRouter.get("/remove", remove);
 
 export default userRouter;
