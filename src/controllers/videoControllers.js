@@ -29,7 +29,6 @@ let videos = [
 export const treding = (req, res) => {
   return res.render("home", { pageTitle: "Home", videos });
 };
-export const search = (req, res) => res.send("Search Videos");
 
 //videoRouter
 export const watch = (req, res) => {
@@ -40,10 +39,11 @@ export const watch = (req, res) => {
     video,
   });
 };
-export const edit = (req, res) => {
+//form 을 보여줌
+export const getEdit = (req, res) => {
   const { id } = req.params;
   const video = videos[id - 0];
-  return res.render("edit", { pageTitle: `Editing: ${video.title}` });
+  return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
 };
-export const upload = (req, res) => res.send("Upload Video");
-export const deleteVideo = (req, res) => res.send("Delete Video");
+//변경사항을 저장해줌.
+export const postEdit = (req, res) => {};
