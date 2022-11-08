@@ -1,5 +1,5 @@
 //globalRouter
-export const treding = (req, res) => res.render("home");
+export const treding = (req, res) => res.render("home", { pageTitle: "Home" });
 export const search = (req, res) => res.send("Search Videos");
 
 //videoRouter
