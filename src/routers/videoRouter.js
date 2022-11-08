@@ -1,7 +1,7 @@
 // URL이 /video로 시작
 import express from "express";
 import {
-  see,
+  watch,
   edit,
   upload,
   deleteVideo,
@@ -9,7 +9,7 @@ import {
 const videoRouter = express.Router();
 
 videoRouter.get("/upload", upload);
-videoRouter.get("/:id(\\d+)", see);
+videoRouter.get("/:id(\\d+)", watch);
 videoRouter.get("/:id(\\d+)/edit", edit);
 videoRouter.get("/:id(\\d+)/delete", deleteVideo);
 
