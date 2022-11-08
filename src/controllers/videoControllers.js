@@ -33,7 +33,7 @@ export const treding = (req, res) => {
 //videoRouter
 export const watch = (req, res) => {
   const { id } = req.params;
-  const video = videos[id - 0];
+  const video = videos[id - 1];
   return res.render("watch", {
     pageTitle: `Watch Video ${video.title}`,
     video,
@@ -42,8 +42,11 @@ export const watch = (req, res) => {
 //form 을 보여줌
 export const getEdit = (req, res) => {
   const { id } = req.params;
-  const video = videos[id - 0];
+  const video = videos[id - 1];
   return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
 };
 //변경사항을 저장해줌.
-export const postEdit = (req, res) => {};
+export const postEdit = (req, res) => {
+  const { id } = req.params;
+  return res.redirect(`/videos/${id}`);
+};
