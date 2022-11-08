@@ -1,6 +1,28 @@
 //globalRouter
 export const treding = (req, res) => {
-  const videos = [];
+  const videos = [
+    {
+      title: "BTS Billboard",
+      rating: 1,
+      comments: 2412412412412421,
+      createAt: "2 minutes ago",
+      id: 2324,
+    },
+    {
+      title: "JIMIN larious",
+      rating: 34,
+      comments: 12,
+      createAt: "2 minutes ago",
+      id: 32,
+    },
+    {
+      title: "JungKook and Chalie",
+      rating: 5,
+      comments: 325,
+      createAt: "2 minutes ago",
+      id: 24,
+    },
+  ];
   return res.render("home", { pageTitle: "Home", videos });
 };
 export const search = (req, res) => res.send("Search Videos");
