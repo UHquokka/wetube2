@@ -1,11 +1,8 @@
-const fakeUser = {
-  username: "YOUJUNG",
-  loggedIn: true,
-};
-
 //globalRouter
-export const treding = (req, res) =>
-  res.render("home", { pageTitle: "Home", fakeUser: fakeUser });
+export const treding = (req, res) => {
+  const videos = [];
+  return res.render("home", { pageTitle: "Home", videos });
+};
 export const search = (req, res) => res.send("Search Videos");
 
 //videoRouter
