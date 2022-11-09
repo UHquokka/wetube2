@@ -17,6 +17,6 @@ app.use("/", globalRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
-app.listen(5555, () =>
+app.listen(PORT, () =>
   console.log(`✅ Server listening on port http://localhost:${PORT} 🍋`)
 );
