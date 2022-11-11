@@ -1,10 +1,22 @@
 import Video from "../models/Video";
 
 //globalRouter
-export const home = (req, res) => {
-  Video.find({}, (error, videos) => {
+
+// <callback 함수를 이용한 DB 호출>
+// export const home = (req, res) => {
+//   Video.find({}, (error, videos) => {
+//     return res.render("home", { pageTitle: "Home", videos: [] });
+//   });
+// };
+
+// <promise 를 이용한 DB 호출>
+export const home = async (req, res) => {
+  try {
+    const videos = await Video.find({});
     return res.render("home", { pageTitle: "Home", videos: [] });
-  });
+  } catch {
+    return res.render("server-error");
+  }
 };
 
 //videoRouter
