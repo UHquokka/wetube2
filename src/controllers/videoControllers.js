@@ -11,26 +11,19 @@ import Video from "../models/Video";
 
 // <promise 를 이용한 DB 호출>
 export const home = async (req, res) => {
-  try {
-    const videos = await Video.find({});
-    return res.render("home", { pageTitle: "Home", videos: [] });
-  } catch {
-    return res.render("server-error");
-  }
+  const videos = await Video.find({});
+  return res.render("home", { pageTitle: "Home", videos });
 };
 
 //videoRouter
 export const watch = (req, res) => {
   const { id } = req.params;
-  return res.render("watch", {
-    pageTitle: `Watch Video ${video.title}`,
-    video,
-  });
+  return res.render("watch", { pageTitle: `Watching` });
 };
 //form 을 보여줌
 export const getEdit = (req, res) => {
   const { id } = req.params;
-  return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
+  return res.render("edit", { pageTitle: `Editing` });
 };
 //변경사항을 저장해줌.
 export const postEdit = (req, res) => {
@@ -42,6 +35,22 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
-export const postUpload = (req, res) => {
-  return res.redirect("/");
+
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  try {
+    await Video.create({
+      title,
+      description,
+      createAt: Date.now(),
+      hashtags: hashtags.split(",").map((word) => `#${word}`),
+    });
+    return res.redirect("/");
+  } catch (error) {
+    console.log(error);
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message,
+    });
+  }
 };
