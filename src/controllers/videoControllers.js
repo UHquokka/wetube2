@@ -1,17 +1,9 @@
 import Video from "../models/Video";
 
 //globalRouter
-
-// <callback 함수를 이용한 DB 호출>
-// export const home = (req, res) => {
-//   Video.find({}, (error, videos) => {
-//     return res.render("home", { pageTitle: "Home", videos: [] });
-//   });
-// };
-
 // <promise 를 이용한 DB 호출>
 export const home = async (req, res) => {
-  const videos = await Video.find({});
+  const videos = await Video.find({}).sort({ createAt: "desc" });
   return res.render("home", { pageTitle: "Home", videos });
 };
 
@@ -54,4 +46,12 @@ export const postUpload = async (req, res) => {
       errorMessage: error._message,
     });
   }
+};
+
+export const search = (req, res) => {
+  const { keyword } = req.query;
+  if (keyword) {
+    //
+  }
+  return res.render("search", { pageTitle: "Search" });
 };
