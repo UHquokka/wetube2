@@ -1,5 +1,10 @@
 //global Router
-export const join = (req, res) => res.send("Join");
+export const getJoin = (req, res) => {
+  return res.render("join", { pageTitle: "Create Account" });
+};
+export const postJoin = (req, res) => {
+  //
+};
 export const login = (req, res) => res.send("Login");
 
 //user Router
