@@ -1,4 +1,5 @@
 import User from "../models/User";
+import bcrypt from "bcrypt";
 
 //global Router
 export const getJoin = (req, res) => {
@@ -20,17 +21,45 @@ export const postJoin = async (req, res) => {
       errorMessage: "This username/email is already taken",
     });
   }
-  await User.create({
-    name,
-    username,
-    email,
-    password,
-    location,
-  });
-  return res.redirect("/login");
+  try {
+    await User.create({
+      name,
+      username,
+      email,
+      password,
+      location,
+    });
+    return res.redirect("/login");
+  } catch (error) {
+    return res.status(400).render("join", {
+      pageTitle: "Join",
+      errorMessage: error._message,
+    });
+  }
 };
-export const login = (req, res) => res.send("Login");
+export const getLogin = (req, res) =>
+  res.render("login", { pageTitle: "Login" });
 
+export const postLogin = async (req, res) => {
+  const { username, password } = req.body;
+  const pageTitle = "Login";
+  const user = await User.findOne({ username });
+  if (!user) {
+    return res.status(400).render("login", {
+      pageTitle,
+      errorMessage: "An account with this username does not exist",
+    });
+  }
+  const ok = await bcrypt.compare(password, user.password);
+  if (!ok) {
+    return res.status(400).render("login", {
+      pageTitle,
+      errorMessage: "Wrong password",
+    });
+  }
+  console.log("LOG USER IN! COMING SOON");
+  return res.redirect("/");
+};
 //user Router
 export const editUser = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Delete User");
