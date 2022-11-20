@@ -16,8 +16,8 @@ export const postJoin = async (req, res) => {
       errorMessage: "Password confirmation does not match",
     });
   }
-  const exist = await User.exists({ $or: [{ username }, { email }] });
-  if (exist) {
+  const exists = await User.exists({ $or: [{ username }, { email }] });
+  if (exists) {
     return res.status(400).render("join", {
       pageTitle: "Join",
       errorMessage: "This username/email is already taken",
@@ -34,7 +34,7 @@ export const postJoin = async (req, res) => {
     return res.redirect("/login");
   } catch (error) {
     return res.status(400).render("join", {
-      pageTitle: "Join",
+      pageTitle: "Upload Video",
       errorMessage: error._message,
     });
   }
@@ -45,7 +45,7 @@ export const getLogin = (req, res) =>
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, socialOnly: false });
   if (!user) {
     return res.status(400).render("login", {
       pageTitle,
@@ -96,7 +96,7 @@ export const finishGithubLogin = async (req, res) => {
   ).json();
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest;
-    const apiUrl = "http://api.github.com";
+    const apiUrl = "https://api.github.com";
     const userData = await (
       await fetch(`${apiUrl}/user`, {
         headers: {
@@ -104,7 +104,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -112,23 +111,36 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    const email = emailData.find(
+    const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
-    if (!email) {
+    if (!emailObj) {
       return res.redirect("/login");
     }
-    // 이 부분까지 오면 primary 이면서 verified 인 email과 userData 모두 받은 셈이니,
-    // -> user를 로그인 시킬 수도 있고, 아니면 계정을 생성시킬 수도 있음.
-    //-> 왜냐면 email이 없다는 뜻일테니까.
-    // Q. email과 PW 로 계정을 생성한 user가 깃헙으로 로그인하려고 하면 어떻게 할 것인지..?
-    // 두개의 이메일이 똑같은 경우 어떻게 할건지!
+
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      user = await User.create({
+        avatarUrl: userData.avatar_url,
+        name: userData.name,
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
 };
 
 export const editUser = (req, res) => res.send("Edit User");
-export const remove = (req, res) => res.send("Delete User");
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect("/");
+};
 export const see = (req, res) => res.send("See User Profile");
-export const logout = (req, res) => res.send("Log out");
