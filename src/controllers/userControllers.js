@@ -86,15 +86,43 @@ export const finishGithubLogin = async (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
-  const data = await fetch(finalUrl, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
-  });
-  const json = await data.json();
-  if ("access_token" in json) {
-    //access api
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  if ("access_token" in tokenRequest) {
+    const { access_token } = tokenRequest;
+    const apiUrl = "http://api.github.com";
+    const userData = await (
+      await fetch(`${apiUrl}/user`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    console.log(userData);
+    const emailData = await (
+      await fetch(`${apiUrl}/user/emails`, {
+        headers: {
+          Authorization: `token ${access_token}`,
+        },
+      })
+    ).json();
+    const email = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!email) {
+      return res.redirect("/login");
+    }
+    // 이 부분까지 오면 primary 이면서 verified 인 email과 userData 모두 받은 셈이니,
+    // -> user를 로그인 시킬 수도 있고, 아니면 계정을 생성시킬 수도 있음.
+    //-> 왜냐면 email이 없다는 뜻일테니까.
+    // Q. email과 PW 로 계정을 생성한 user가 깃헙으로 로그인하려고 하면 어떻게 할 것인지..?
+    // 두개의 이메일이 똑같은 경우 어떻게 할건지!
   } else {
     return res.redirect("/login");
   }
