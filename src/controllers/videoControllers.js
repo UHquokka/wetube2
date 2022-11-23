@@ -3,7 +3,7 @@ import Video from "../models/Video";
 //globalRouter
 // <promise 를 이용한 DB 호출>
 export const home = async (req, res) => {
-  const videos = await Video.find({}).sort({ createAt: "desc" });
+  const videos = await Video.find({}).sort({ createdAt: "desc" });
   return res.render("home", { pageTitle: "Home", videos });
 };
 
@@ -11,6 +11,9 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "Video not found." });
+  }
   return res.render("watch", { pageTitle: video.title, video });
 };
 
@@ -20,7 +23,7 @@ export const getEdit = async (req, res) => {
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not Found" });
   }
-  return res.render("edit", { pageTitle: `Editing`, video });
+  return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
 
 export const postEdit = async (req, res) => {
@@ -33,7 +36,7 @@ export const postEdit = async (req, res) => {
   await Video.findByIdAndUpdate(id, {
     title,
     description,
-    hashtags: Video.formathashtas(hashtags),
+    hashtags: Video.formatHashtags(hashtags),
   });
   return res.redirect(`/videos/${id}`);
 };
@@ -43,13 +46,14 @@ export const getUpload = (req, res) => {
 };
 
 export const postUpload = async (req, res) => {
+  const { path: fileUrl } = req.file;
   const { title, description, hashtags } = req.body;
   try {
     await Video.create({
       title,
       description,
-      createAt: Date.now(),
-      hashtags: hashtags.split(",").map((word) => `#${word}`),
+      fileUrl,
+      hashtags: Video.formatHashtags(hashtags),
     });
     return res.redirect("/");
   } catch (error) {
@@ -60,7 +64,11 @@ export const postUpload = async (req, res) => {
     });
   }
 };
-
+export const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndDelete(id);
+  return res.redirect("/");
+};
 export const search = async (req, res) => {
   const { keyword } = req.query;
   let videos = [];
@@ -73,5 +81,3 @@ export const search = async (req, res) => {
   }
   return res.render("search", { pageTitle: "Search", videos });
 };
-
-export const deleteVideo = (req, res) => {};
