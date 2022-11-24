@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 // import { application } from "express";
@@ -213,8 +214,11 @@ export const see = async (req, res) => {
     return res.status(404).send("No users");
     //404페이지 만들고 보내야함.pagetitle : Users not found
   }
+  const videos = await Video.find({ owner: user._id });
+  console.log(videos);
   return res.render("users/profile", {
     pageTitle: user.name,
     user,
+    videos,
   });
 };
