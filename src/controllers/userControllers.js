@@ -1,7 +1,7 @@
 import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
-import { application } from "express";
+// import { application } from "express";
 
 //global Router
 export const getJoin = (req, res) => {
@@ -10,16 +10,17 @@ export const getJoin = (req, res) => {
 
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password2, location } = req.body;
+  const pageTitle = "Join";
   if (password !== password2) {
     return res.status(400).render("join", {
-      pageTitle: "Join",
+      pageTitle,
       errorMessage: "Password confirmation does not match",
     });
   }
   const exists = await User.exists({ $or: [{ username }, { email }] });
   if (exists) {
     return res.status(400).render("join", {
-      pageTitle: "Join",
+      pageTitle,
       errorMessage: "This username/email is already taken",
     });
   }
@@ -205,4 +206,15 @@ export const postChangePassword = async (req, res) => {
   await user.save();
   return res.redirect("/users/logout");
 };
-export const see = (req, res) => res.send("See User Profile");
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).send("No users");
+    //404페이지 만들고 보내야함.pagetitle : Users not found
+  }
+  return res.render("users/profile", {
+    pageTitle: user.name,
+    user,
+  });
+};
