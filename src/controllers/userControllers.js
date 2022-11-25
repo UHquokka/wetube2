@@ -207,18 +207,16 @@ export const postChangePassword = async (req, res) => {
   await user.save();
   return res.redirect("/users/logout");
 };
+
 export const see = async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate("videos");
   if (!user) {
     return res.status(404).send("No users");
     //404페이지 만들고 보내야함.pagetitle : Users not found
   }
-  const videos = await Video.find({ owner: user._id });
-  console.log(videos);
   return res.render("users/profile", {
     pageTitle: user.name,
     user,
-    videos,
   });
 };
