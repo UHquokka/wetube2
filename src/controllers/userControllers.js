@@ -1,7 +1,6 @@
 import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
-// import { application } from "express";
 
 //global Router
 export const getJoin = (req, res) => {
