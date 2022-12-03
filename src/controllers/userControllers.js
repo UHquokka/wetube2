@@ -224,7 +224,6 @@ export const see = async (req, res) => {
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User nor Found" });
   }
-  a;
   return res.render("users/profile", {
     pageTitle: user.name,
     user,
