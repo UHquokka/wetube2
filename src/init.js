@@ -7,7 +7,7 @@ import "./models/Comment";
 
 import app from "./server";
 
-const PORT = 5555;
+const PORT = process.env.PORT || 5555;
 
 app.listen(PORT, () =>
   console.log(`🍄 Server listening on port http://localhost:${PORT} 🍋`)
